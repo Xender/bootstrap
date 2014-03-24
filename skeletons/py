@@ -1,0 +1,9 @@
+#!/bin/env python
+
+import sys
+
+def main():
+	print("Hello, World!", file=sys.stderr)
+
+if __name__ == "__main__":
+	main()
