@@ -23,6 +23,8 @@ errxit () { # Pun for "ERRor eXIT"
 
 ### main
 
+exec 3>&1 1>&2 # Redirect stdout to stderr, leaving original stdout at fd 3
+# This is to ensure that only things that are explicitely written to &3 will be executed by eval.
 case $# in
 	3) PROJ_PARENT=$3;;
 	2) PROJ_PARENT="$HOME/coding";;
@@ -36,13 +38,13 @@ PROJ_DIR="$PROJ_PARENT/$PROJECT_NAME"
 SKEL="$HOME/.config/bootstrap/$SKELETON_NAME" #TODO maybe use XDG config dir (which defaults to ~/.config/)?
 
 if ! mkdir "$PROJ_DIR"; then
-	[[ -d "$PROJ_DIR" ]] && echo "cd ${(qq)PROJ_DIR}"
+	[[ -d "$PROJ_DIR" ]] && echo >&3 "cd ${(qq)PROJ_DIR}"
 	exit 1
 fi
 
 cd "$PROJ_DIR" || errxit 2 "Eh? Cannot cd into just created dir? This shouldn't happen..."
 
-echo "cd ${(qq)PROJ_DIR}"
+echo >&3 "cd ${(qq)PROJ_DIR}"
 
 if   [[ -d "$SKEL" ]]; then cp -R "$SKEL"/* .                                # "$SKEL" is a directory. Copy it's content recursively.
 elif [[ -f "$SKEL" ]]; then cp    "$SKEL"   ./"$PROJECT_NAME.$SKELETON_NAME" # "$SKEL" is a file. Copy it with name <project_name>.<skeleton>
