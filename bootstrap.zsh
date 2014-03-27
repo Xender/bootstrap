@@ -5,9 +5,15 @@
 
 usage () {
 	cat >&2 <<EOF
-Usage: bootstrap.zsh <project_name> <skeleton> [<project_parent_dir>]
+Usage: bootstrap.zsh [options] <project_name> <skeleton> [<project_parent_dir>]
 
 <project_parent_dir> defaults to ~/coding
+
+options:
+	-g --git    -- do `git init` in project dir
+	-h --hg     -- do `hg init` in project dir
+
+Options can be placed before, after, or even interweave with the positional args.
 EOF
 }
 
@@ -25,6 +31,25 @@ errxit () { # Pun for "ERRor eXIT"
 
 exec 3>&1 1>&2 # Redirect stdout to stderr, leaving original stdout at fd 3
 # This is to ensure that only things that are explicitely written to &3 will be executed by eval.
+
+# Parse commandline
+ARGS=()
+
+while (($#)); do
+	case "$1" in
+		-g|--git)    REPO_INIT_CMD=(git init);;
+		-h|--hg)     REPO_INIT_CMD=(hg init);;
+		--)          shift; ARGS+=("$@"); break;;
+		-*)          echo >&2 "Uknown option - $1"; usage; exit 1;;
+		*)           ARGS+=("$1");;
+	esac
+	shift
+done
+
+set -- $ARGS # is this evil?
+unset ARGS
+
+# Positional arguments
 case $# in
 	3) PROJ_PARENT=$3;;
 	2) PROJ_PARENT="$HOME/coding";;
@@ -34,6 +59,7 @@ esac
 PROJECT_NAME=$1
 SKELETON_NAME=$2
 
+# Actual work
 PROJ_DIR="$PROJ_PARENT/$PROJECT_NAME"
 SKEL="$HOME/.config/bootstrap/$SKELETON_NAME" #TODO maybe use XDG config dir (which defaults to ~/.config/)?
 
@@ -45,6 +71,8 @@ fi
 cd "$PROJ_DIR" || errxit 2 "Eh? Cannot cd into just created dir? This shouldn't happen..."
 
 echo >&3 "cd ${(qq)PROJ_DIR}"
+
+$REPO_INIT_CMD # is this evil?
 
 if   [[ -d "$SKEL" ]]; then cp -R "$SKEL"/* .                                # "$SKEL" is a directory. Copy it's content recursively.
 elif [[ -f "$SKEL" ]]; then cp    "$SKEL"   ./"$PROJECT_NAME.$SKELETON_NAME" # "$SKEL" is a file. Copy it with name <project_name>.<skeleton>
