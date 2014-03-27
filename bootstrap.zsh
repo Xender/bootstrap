@@ -32,7 +32,7 @@ errxit () { # Pun for "ERRor eXIT"
 exec 3>&1 1>&2 # Redirect stdout to stderr, leaving original stdout at fd 3
 # This is to ensure that only things that are explicitely written to &3 will be executed by eval.
 
-# Parse commandline
+# Parse options
 ARGS=()
 
 while (($#)); do
@@ -46,18 +46,15 @@ while (($#)); do
 	shift
 done
 
-set -- $ARGS # is this evil?
-unset ARGS
-
 # Positional arguments
-case $# in
-	3) PROJ_PARENT=$3;;
-	2) PROJ_PARENT="$HOME/coding";;
+case $#ARGS in
+	3) PROJ_PARENT=$ARGS[3];;
+	2) PROJ_PARENT="$HOME/coding";; #TODO default from (now nonexistent) user's config, then fallback to hardcoded
 	*) usage; exit 1;;
 esac
 
-PROJECT_NAME=$1
-SKELETON_NAME=$2
+PROJECT_NAME=$ARGS[1]
+SKELETON_NAME=$ARGS[2]
 
 # Actual work
 PROJ_DIR="$PROJ_PARENT/$PROJECT_NAME"
