@@ -4,14 +4,14 @@
 # bs() { eval $(/path/to/bootstrap.sh "$@"); }
 
 usage () {
-	cat >&2 <<EOF
+	cat >&2 <<'EOF'
 Usage: bootstrap.zsh [options] <project_name> <skeleton> [<project_parent_dir>]
 
 <project_parent_dir> defaults to ~/coding
 
 options:
-	-g --git    -- do `git init` in project dir
-	-h --hg     -- do `hg init` in project dir
+	-g --git    -- do `git init' in project dir
+	-h --hg     -- do `hg init' in project dir
 
 Options can be placed before, after, or even interweave with the positional args.
 EOF
@@ -40,6 +40,7 @@ while (($#)); do
 		-g|--git)    REPO_INIT_CMD=(git init);;
 		-h|--hg)     REPO_INIT_CMD=(hg init);;
 		--)          shift; ARGS+=("$@"); break;;
+		--usage)     usage; exit;;
 		-*)          echo >&2 "Uknown option - $1"; usage; exit 1;;
 		*)           ARGS+=("$1");;
 	esac
