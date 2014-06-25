@@ -72,7 +72,7 @@ echo >&3 "cd ${(qq)PROJ_DIR}"
 
 $REPO_INIT_CMD # is this evil?
 
-if   [[ -d "$SKEL" ]]; then cp -R "$SKEL"/* .                                # "$SKEL" is a directory. Copy it's content recursively.
-elif [[ -f "$SKEL" ]]; then cp    "$SKEL"   ./"$PROJECT_NAME.$SKELETON_NAME" # "$SKEL" is a file. Copy it with name <project_name>.<skeleton>
+if   [[ -d "$SKEL" ]]; then cp -R "$SKEL"/* .                                    # "$SKEL" is a directory. Copy it's content recursively.
+elif [[ -f "$SKEL" ]]; then cp    "$SKEL"   ./"$PROJECT_NAME.$SKELETON_NAME:r"   # "$SKEL" is a file. Copy it with name <project_name>.<skeleton's name (without last .part)>
 else                        errxit 3 "${(qq)SKEL} - no such skeleton."
 fi
