@@ -3,6 +3,8 @@
 # You can use this script in your interactive shell config like that:
 # bs() { eval $(/path/to/bootstrap.sh "$@"); }
 
+SKELS_DIR="$HOME/.config/bootstrap/" #TODO maybe use XDG config dir (which defaults to ~/.config/)?
+
 usage () {
 	cat >&2 <<'EOF'
 Usage: bootstrap.zsh [options] <project_name> <skeleton> [<project_parent_dir>]
@@ -14,7 +16,12 @@ Options:
 	-h, --hg     do `hg init' in project dir
 
 	Options can be placed before, after, or even interweave with the positional args.
+
+Available skeletons:
 EOF
+	for skel in $SKELS_DIR/*(:t); do
+		echo "\t$skel"
+	done
 }
 
 ###
@@ -59,7 +66,7 @@ SKELETON_NAME=$ARGS[2]
 
 # Actual work
 PROJ_DIR="$PROJ_PARENT/$PROJECT_NAME"
-SKEL="$HOME/.config/bootstrap/$SKELETON_NAME" #TODO maybe use XDG config dir (which defaults to ~/.config/)?
+SKEL="$SKELS_DIR/$SKELETON_NAME"
 
 if ! mkdir "$PROJ_DIR"; then
 	[[ -d "$PROJ_DIR" ]] && echo >&3 "cd ${(qq)PROJ_DIR}"
