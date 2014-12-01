@@ -9,11 +9,11 @@ Usage: bootstrap.zsh [options] <project_name> <skeleton> [<project_parent_dir>]
 
 <project_parent_dir> defaults to ~/coding
 
-options:
+Options:
 	-g, --git    do `git init' in project dir
 	-h, --hg     do `hg init' in project dir
 
-Options can be placed before, after, or even interweave with the positional args.
+	Options can be placed before, after, or even interweave with the positional args.
 EOF
 }
 
